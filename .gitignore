@@ -1,0 +1,50 @@
+# Dependencies
+vendor/
+.bundle/
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+credentials.json
+
+# AWS SAM
+.aws-sam/
+samconfig.toml
+
+# Ruby
+*.gem
+*.rbc
+.byebug_history
+.ruby-version
+.ruby-gemset
+
+# Logs
+*.log
+log/
+
+# Temporary files
+tmp/
+*.tmp
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE & Tools
+.idea/
+.vscode/
+*.code-workspace
+.claude/
+
+# Test coverage
+coverage/
+
+# Build artifacts
+build/
+dist/
+pkg/
