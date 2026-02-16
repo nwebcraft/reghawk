@@ -33,15 +33,23 @@
 - **WHEN** 経済産業省のAtomフィードを取得する
 - **THEN** 記事のタイトル、URL、公開日時、説明を抽出できる
 
-### Requirement: Feed Source Configuration
-システムは、6つの監視対象サイトの設定を管理しなければならない（SHALL）。
+### Requirement: Page Content Extraction
+システムは、AI要約のために記事の詳細ページからテキストコンテンツを抽出しなければならない（SHALL）。
 
-#### Scenario: Configure all feed sources
-- **WHEN** システムを初期化する
-- **THEN** 以下の6サイトのフィード設定が読み込まれる
-  - 金融庁（fsa）- 関心領域: 暗号資産
-  - 経済産業省（meti）- 関心領域: 補助金
-  - 厚生労働省（mhlw）- 関心領域: 社会保険
-  - デジタル庁（digital）- 関心領域: DX関連
-  - 総務省（soumu）- 関心領域: 汎用
-  - e-Govパブコメ（egov）- 関心領域: 全件対象
+#### Scenario: Extract text from HTML page
+- **WHEN** 関心領域に該当する記事の詳細ページURLにアクセスする
+- **THEN** HTMLタグ（script, style含む）を除去してテキストのみを抽出する
+- **AND** HTMLエンティティ（&amp;, &lt;, &gt;, &nbsp;）をデコードする
+- **AND** 連続する空白を単一スペースに正規化する
+
+#### Scenario: Truncate long page content
+- **WHEN** 抽出したテキストが8000文字を超える
+- **THEN** 8000文字で切り詰め、末尾に「...」を付与する（トークン節約）
+
+### Requirement: Feed Source Configuration
+システムは、DBのfeed_sourcesテーブルから有効な監視対象サイトの設定を取得しなければならない（SHALL）。
+
+#### Scenario: Load active feed sources from DB
+- **WHEN** システムが実行される
+- **THEN** feed_sourcesテーブルからis_active=TRUEのソース一覧を取得する
+- **AND** 各ソースのkey, name, rss_url, interestが読み込まれる

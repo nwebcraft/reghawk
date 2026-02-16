@@ -77,6 +77,14 @@
 - プッシュ通知で開封率が高い
 - 日本での普及率が高い
 
+**実装詳細:**
+- 送信方式: ブロードキャスト（`/message/broadcast`）、個別user_id不要
+- API Base URL: `https://api.line.me/v2/bot`
+- 環境変数: `REGHAWK_LINE_CHANNEL_TOKEN`（チャネルアクセストークン長期）
+- 外部gem不要（Ruby標準ライブラリ `net/http`, `json` のみ）
+- 1回のbroadcastで最大5メッセージ、超過時はバッチ分割＋0.5秒待機
+- テキストメッセージ上限5000文字、超過時は切り詰め
+
 **代替案:**
 - Slack: 無料プランではメッセージ履歴制限あり
 - メール: 迷惑メールフォルダリスクあり
@@ -190,17 +198,34 @@ CREATE INDEX idx_articles_created_at ON articles(created_at DESC);
 ## Module Structure
 
 ```
-lib/
-├── handler.rb           # Lambda エントリーポイント
-├── rss_fetcher.rb       # RSS取得・パース
-├── article_repository.rb # DB操作
-├── gemini_client.rb     # Gemini API クライアント
-├── ai_analyzer.rb       # AI判定・要約ロジック
-├── prompts.rb           # AIプロンプト定義
-├── line_notifier.rb     # LINE通知
-├── database.rb          # DB接続管理
-└── config.rb            # 設定・環境変数
+src/
+├── handler.rb             # Lambda エントリーポイント（パイプライン制御）
+├── Gemfile                # 依存関係（pg gem）
+└── lib/
+    ├── rss_fetcher.rb     # RSS取得・パース + 詳細ページテキスト抽出
+    ├── ai_analyzer.rb     # Gemini API連携（判定 + 要約 + プロンプト定義）
+    ├── line_notifier.rb   # LINE通知送信
+    └── database.rb        # PostgreSQL操作（記事CRUD + フィードソース管理）
 ```
+
+### ツールスクリプト（プロジェクトルート）
+
+```
+reghawk/
+├── db_migrate.rb          # DBマイグレーション（migrate / reset / schema）
+├── rss_url_checker.rb     # RSS URL疎通確認
+├── rss_fetcher_prototype.rb # RSS取得プロトタイプ（開発用）
+├── ai_prompts.rb          # プロンプト設計・テスト（開発用）
+└── line_notifier.rb       # LINE通知CLIテスト（test / quota / flex_test）
+```
+
+## Environment Variables
+
+| 変数名 | 用途 | 使用箇所 |
+|--------|------|---------|
+| `REGHAWK_DATABASE_URL` | Neon PostgreSQL接続文字列 | database.rb, db_migrate.rb |
+| `REGHAWK_LINE_CHANNEL_TOKEN` | LINEチャネルアクセストークン（長期） | line_notifier.rb |
+| `REGHAWK_GEMINI_API_KEY` | Gemini API キー | ai_analyzer.rb |
 
 ## AI Prompt Design
 
