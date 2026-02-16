@@ -27,6 +27,7 @@ log/
 # Temporary files
 tmp/
 *.tmp
+rss_output_sample.json
 *.swp
 *.swo
 *~

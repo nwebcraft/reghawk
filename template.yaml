@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: RegHawk - Government regulation update watcher
+
+Parameters:
+  DatabaseUrl:
+    Type: String
+    Description: Neon PostgreSQL connection string
+    NoEcho: true
+  LineChannelToken:
+    Type: String
+    Description: LINE Messaging API channel access token
+    NoEcho: true
+  GeminiApiKey:
+    Type: String
+    Description: Google Gemini API key
+    NoEcho: true
+
+Globals:
+  Function:
+    Timeout: 120
+    Runtime: ruby3.3
+    MemorySize: 256
+
+Resources:
+  RegHawkWatcher:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: handler.lambda_handler
+      Environment:
+        Variables:
+          REGHAWK_DATABASE_URL: !Ref DatabaseUrl
+          REGHAWK_LINE_CHANNEL_TOKEN: !Ref LineChannelToken
+          REGHAWK_GEMINI_API_KEY: !Ref GeminiApiKey
+      Events:
+        MorningSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 0 * * ? *)
+            Description: "Run at 9:00 JST (0:00 UTC)"
+        EveningSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 9 * * ? *)
+            Description: "Run at 18:00 JST (9:00 UTC)"
+
+Outputs:
+  RegHawkWatcherFunction:
+    Description: RegHawk Lambda Function ARN
+    Value: !GetAtt RegHawkWatcher.Arn
