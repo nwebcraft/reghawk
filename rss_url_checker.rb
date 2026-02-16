@@ -21,12 +21,12 @@ require "uri"
 require "rss"
 
 FEEDS = {
-  "金融庁" => "https://www.fsa.go.jp/fsanews.rdf",
+  "金融庁" => "https://www.fsa.go.jp/fsaNewsListAll_rss2.xml",
   "経済産業省" => "https://www.meti.go.jp/ml_index_release_atom.xml",
   "厚生労働省" => "https://www.mhlw.go.jp/stf/news.rdf",
-  "デジタル庁" => "https://www.digital.go.jp/news/rss.xml",
-  "総務省" => "https://www.soumu.go.jp/menu_kyotsuu/whatsnew/shinchaku_rss.xml",
-  "e-Gov パブコメ" => "https://public-comment.e-gov.go.jp/servlet/Public?CLASSNAME=PCM1013_CLS&feedtype=rss",
+  "デジタル庁" => "https://www.digital.go.jp/rss/news.xml",
+  "総務省" => "https://www.soumu.go.jp/news.rdf",
+  "e-Gov パブコメ" => "https://www.e-gov.go.jp/news/news.xml",
 }
 
 # 代替URLの候補（メインURLが無効だった場合に試す）
