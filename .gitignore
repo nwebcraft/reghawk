@@ -41,6 +41,7 @@ Thumbs.db
 .vscode/
 *.code-workspace
 .claude/
+.agents/
 
 # Test coverage
 coverage/
