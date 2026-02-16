@@ -28,7 +28,7 @@ FEED_SOURCES = [
     key: "fsa",
     name: "金融庁",
     interest: "暗号資産",
-    url: "https://www.fsa.go.jp/fsanews.rdf"
+    url: "https://www.fsa.go.jp/fsaNewsListAll_rss2.xml"
   },
   {
     key: "meti",
@@ -46,19 +46,19 @@ FEED_SOURCES = [
     key: "digital",
     name: "デジタル庁",
     interest: "DX関連",
-    url: "https://www.digital.go.jp/news/rss.xml"
+    url: "https://www.digital.go.jp/rss/news.xml"
   },
   {
     key: "soumu",
     name: "総務省",
     interest: nil,
-    url: "https://www.soumu.go.jp/menu_kyotsuu/whatsnew/shinchaku_rss.xml"
+    url: "https://www.soumu.go.jp/news.rdf"
   },
   {
     key: "egov",
     name: "e-Gov パブコメ",
     interest: nil,
-    url: "https://public-comment.e-gov.go.jp/servlet/Public?CLASSNAME=PCM1013_CLS&feedtype=rss"
+    url: "https://www.e-gov.go.jp/news/news.xml"
   },
 ].freeze
 

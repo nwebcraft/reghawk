@@ -169,12 +169,12 @@
 
 | key | name | rss_url | interest |
 |-----|------|---------|----------|
-| fsa | 金融庁 | https://www.fsa.go.jp/fsanews.rdf | 暗号資産,仮想通貨,暗号資産交換業,ブロックチェーン,Web3 |
+| fsa | 金融庁 | https://www.fsa.go.jp/fsaNewsListAll_rss2.xml | 暗号資産,仮想通貨,暗号資産交換業,ブロックチェーン,Web3 |
 | meti | 経済産業省 | https://www.meti.go.jp/ml_index_release_atom.xml | 補助金,助成金,支援金,給付金,事業支援 |
 | mhlw | 厚生労働省 | https://www.mhlw.go.jp/stf/news.rdf | 社会保険,健康保険,厚生年金,雇用保険,労災保険,社会保障 |
-| digital | デジタル庁 | https://www.digital.go.jp/news/rss.xml | DX,デジタルトランスフォーメーション,マイナンバー,デジタル化 |
-| soumu | 総務省 | https://www.soumu.go.jp/menu_kyotsuu/whatsnew/shinchaku_rss.xml | NULL（全件対象） |
-| egov | e-Gov パブコメ | https://public-comment.e-gov.go.jp/servlet/Public?CLASSNAME=PCM1013_CLS&feedtype=rss | NULL（全件対象） |
+| digital | デジタル庁 | https://www.digital.go.jp/rss/news.xml | DX,デジタルトランスフォーメーション,マイナンバー,デジタル化 |
+| soumu | 総務省 | https://www.soumu.go.jp/news.rdf | NULL（全件対象） |
+| egov | e-Gov パブコメ | https://www.e-gov.go.jp/news/news.xml | NULL（全件対象） |
 
 ### schema_migrations テーブル
 
