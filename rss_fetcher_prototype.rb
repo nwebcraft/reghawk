@@ -224,7 +224,7 @@ def main
         interest: data[:source][:interest],
         title: article[:title],
         url: article[:url],
-        published_at: article[:published_at]&.iso8601 rescue article[:published_at]&.to_s,
+        published_at: (article[:published_at]&.iso8601 rescue article[:published_at]&.to_s),
       }
     end
   end.flatten
