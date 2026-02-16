@@ -128,16 +128,53 @@
 | Column | Type | Description |
 |--------|------|-------------|
 | id | SERIAL PRIMARY KEY | 一意識別子 |
-| source | VARCHAR(50) | 情報源キー（fsa, meti, mhlw, digital, soumu, egov） |
-| title | TEXT | 記事タイトル |
-| url | TEXT UNIQUE | 元記事URL（重複判定キー） |
+| source | VARCHAR(20) NOT NULL | 情報源キー（fsa, meti, mhlw, digital, soumu, egov） |
+| source_name | VARCHAR(50) NOT NULL | 情報源名（金融庁、経済産業省 等） |
+| title | TEXT NOT NULL | 記事タイトル |
+| url | TEXT NOT NULL UNIQUE | 元記事URL（重複判定キー） |
 | published_at | TIMESTAMP | 公開日時 |
 | is_relevant | BOOLEAN | AI判定：関心領域該当フラグ |
 | category | VARCHAR(100) | AI判定：カテゴリ名 |
 | summary | TEXT | AI生成要約 |
-| impact_analysis | JSONB | AI生成影響分析（4項目） |
-| notified_at | TIMESTAMP | 通知送信日時 |
-| created_at | TIMESTAMP DEFAULT NOW() | レコード作成日時 |
+| what_changes | TEXT | 何が変わるか |
+| who_affected | TEXT | 誰に影響があるか |
+| effective_date | TEXT | いつから |
+| action_required | TEXT | 必要な対応 |
+| notified_at | TIMESTAMP | 通知送信日時（NULLなら未通知） |
+| created_at | TIMESTAMP NOT NULL DEFAULT NOW() | レコード作成日時 |
+| updated_at | TIMESTAMP NOT NULL DEFAULT NOW() | レコード更新日時 |
+
+### feed_sources テーブル
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | SERIAL PRIMARY KEY | 一意識別子 |
+| key | VARCHAR(20) NOT NULL UNIQUE | 情報源キー（fsa, meti 等） |
+| name | VARCHAR(50) NOT NULL | 情報源名 |
+| rss_url | TEXT NOT NULL | RSSフィードURL |
+| interest | VARCHAR(200) | 関心領域キーワード（NULLは全件対象） |
+| is_active | BOOLEAN NOT NULL DEFAULT TRUE | 有効フラグ |
+| last_fetched_at | TIMESTAMP | 最終取得日時 |
+| created_at | TIMESTAMP NOT NULL DEFAULT NOW() | レコード作成日時 |
+
+#### 初期データ
+
+| key | name | rss_url | interest |
+|-----|------|---------|----------|
+| fsa | 金融庁 | https://www.fsa.go.jp/fsanews.rdf | 暗号資産,仮想通貨,暗号資産交換業,ブロックチェーン,Web3 |
+| meti | 経済産業省 | https://www.meti.go.jp/ml_index_release_atom.xml | 補助金,助成金,支援金,給付金,事業支援 |
+| mhlw | 厚生労働省 | https://www.mhlw.go.jp/stf/news.rdf | 社会保険,健康保険,厚生年金,雇用保険,労災保険,社会保障 |
+| digital | デジタル庁 | https://www.digital.go.jp/news/rss.xml | DX,デジタルトランスフォーメーション,マイナンバー,デジタル化 |
+| soumu | 総務省 | https://www.soumu.go.jp/menu_kyotsuu/whatsnew/shinchaku_rss.xml | NULL（全件対象） |
+| egov | e-Gov パブコメ | https://public-comment.e-gov.go.jp/servlet/Public?CLASSNAME=PCM1013_CLS&feedtype=rss | NULL（全件対象） |
+
+### schema_migrations テーブル
+
+| Column | Type | Description |
+|--------|------|-------------|
+| version | INTEGER PRIMARY KEY | マイグレーションバージョン |
+| name | VARCHAR(100) NOT NULL | マイグレーション名 |
+| migrated_at | TIMESTAMP NOT NULL DEFAULT NOW() | 適用日時 |
 
 ### インデックス
 
@@ -146,18 +183,9 @@ CREATE UNIQUE INDEX idx_articles_url ON articles(url);
 CREATE INDEX idx_articles_source ON articles(source);
 CREATE INDEX idx_articles_published_at ON articles(published_at DESC);
 CREATE INDEX idx_articles_is_relevant ON articles(is_relevant) WHERE is_relevant = true;
+CREATE INDEX idx_articles_notified_at ON articles(notified_at);
+CREATE INDEX idx_articles_created_at ON articles(created_at DESC);
 ```
-
-## Feed Sources
-
-| key | 情報源 | RSS URL | フォーマット |
-|-----|--------|---------|-------------|
-| fsa | 金融庁 | https://www.fsa.go.jp/fsanews.rdf | RSS 1.0 (RDF) |
-| meti | 経済産業省 | https://www.meti.go.jp/ml_index_release_atom.xml | Atom |
-| mhlw | 厚生労働省 | https://www.mhlw.go.jp/stf/news.rdf | RSS 1.0 (RDF) |
-| digital | デジタル庁 | https://www.digital.go.jp/news/rss.xml | RSS 2.0 |
-| soumu | 総務省 | https://www.soumu.go.jp/menu_kyotsuu/whatsnew/shinchaku_rss.xml | RSS 2.0 |
-| egov | e-Gov パブコメ | https://public-comment.e-gov.go.jp/servlet/Public?CLASSNAME=PCM1013_CLS&feedtype=rss | RSS 2.0 |
 
 ## Module Structure
 
